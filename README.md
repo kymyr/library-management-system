@@ -71,6 +71,12 @@ Output: `books_loans.csv` (columns: `loanId, bookId, memberId, checkout_date, du
 
 ## How to generate
 
+Install dependencies:
+
+```bash
+pip install -r generate_library_catalogue/requirements.txt
+```
+
 Run the scripts in this order from the `generate_library_catalogue` directory:
 
 ```bash
@@ -94,19 +100,19 @@ The generated files are written to the `data/` directory:
 ## Console Library Management System
 
 ### Feature Requirements
-1.)  Book catalogue (title, author, ISBN, total & available copies)
+1.) Book catalogue (title, author, ISBN, total & available copies)
 
-2.)  Register members with unique IDs
+2.) Register members with unique IDs
 
-3.)  Check-out & check-in of copies
+3.) Check-out & check-in of copies
 
-4.)  Track loan history
+4.) Track loan history
 
-5.)  Search by title, author, ISBN
+5.) Search by title, author, ISBN
 
 6.) Persist to CSV/JSON via java.nio.file (load on start, save on exit)
 
-7.)  Bulk-import books from CSV using parallel processing
+7.) Bulk-import books from CSV using parallel processing
 
 8.) Clear CLI menu with helpful validation & error messages
 
