@@ -79,5 +79,5 @@ def generate_loans(inventory_path: str, output_path: str, seed: int = 42) -> Non
     loans.write_csv(output_path)
 
 if __name__ == "__main__":
-    script_dir = Path(__file__).parent
-    generate_loans(script_dir / "books_inventory.csv", script_dir / "books_loans.csv")
+    data_dir = Path(__file__).parent.parent / "data"
+    generate_loans(data_dir / "books_inventory.csv", data_dir / "books_loans.csv")

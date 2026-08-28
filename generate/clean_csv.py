@@ -66,5 +66,5 @@ def clean_csv(file_path: str, output_path: str) -> None:
     df.write_csv(output_path)
 
 if __name__ == "__main__":
-    script_dir = Path(__file__).parent
-    clean_csv(script_dir / "books.csv", script_dir / "books_catalogue.csv")
+    data_dir = Path(__file__).parent.parent / "data"
+    clean_csv(data_dir / "books.csv", data_dir / "books_catalogue.csv")

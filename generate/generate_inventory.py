@@ -16,5 +16,5 @@ def generate_inventory(catalogue_path: str, output_path: str, seed: int = 42) ->
     inventory.write_csv(output_path)
 
 if __name__ == "__main__":
-    script_dir = Path(__file__).parent
-    generate_inventory(script_dir / "books_catalogue.csv", script_dir / "books_inventory.csv")
+    data_dir = Path(__file__).parent.parent / "data"
+    generate_inventory(data_dir / "books_catalogue.csv", data_dir / "books_inventory.csv")
