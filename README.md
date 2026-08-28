@@ -2,6 +2,25 @@
 
 A console library management system built on persistent CSV data.
 
+## Project Structure
+```
+library-management-system
+├── .gitignore
+├── README.md
+├── data
+│   ├── books.csv
+│   ├── books_catalogue.csv
+│   ├── books_inventory.csv
+│   ├── books_loans.csv
+│   └── library_members.csv
+└── generate_library_catalogue
+    ├── clean_csv.py
+    ├── generate_inventory.py
+    ├── generate_loans.py
+    └── generate_members.py
+```
+---
+
 ## Data source
 
 The raw book data (`books.csv`, not tracked in this repo due to size) comes from:
@@ -10,7 +29,7 @@ The raw book data (`books.csv`, not tracked in this repo due to size) comes from
 
 Download it and place it in this folder as `books.csv` before running the scripts below.
 
-## Progress so far
+## Generate Library Catalogue
 
 ### `clean_csv.py`
 Builds `books_catalogue.csv` from the raw `books.csv`, keeping only `bookId, title, author, isbn`. Cleaning steps applied:
@@ -69,3 +88,39 @@ The generated files are written to the `data/` directory:
 2. `books_inventory.csv`
 3. `library_members.csv`
 4. `books_loans.csv`
+
+---
+
+## Console Library Management System
+
+### Feature Requirements
+1.)  Book catalogue (title, author, ISBN, total & available copies)
+
+2.)  Register members with unique IDs
+
+3.)  Check-out & check-in of copies
+
+4.)  Track loan history
+
+5.)  Search by title, author, ISBN
+
+6.) Persist to CSV/JSON via java.nio.file (load on start, save on exit)
+
+7.)  Bulk-import books from CSV using parallel processing
+
+8.) Clear CLI menu with helpful validation & error messages
+
+### Mandatory Requirements
+-  ≥ 8 classes in clear packages
+- ≥ 1 interface, 1 abstract class, 1 record, 1 enum
+- Custom exception hierarchy (≥ 3 specific types)
+- Meaningful collections, generics, streams
+- JUnit 5 suite, ≥ 75% line coverage incl. failure paths
+- ≥ 1 race-safe concurrency feature (ExecutorService / CompletableFuture)
+- README with setup + short architecture diagram
+- Maven build, portable relative paths — no secrets / no network
+
+## How to Run
+
+
+## Sample Console Run
