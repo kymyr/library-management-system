@@ -31,6 +31,15 @@ Generates `books_inventory.csv` from `books_catalogue.csv` with dummy copy count
 
 Output: `books_inventory.csv` (columns: `bookId, total_copies, available_copies`)
 
+### `generate_loans.py`
+Generates `books_loans.csv` from `books_inventory.csv` — the loan history for each book:
+- One `Borrowed` (active) loan row per currently checked-out copy (`total_copies - available_copies`), with checkout dates skewed recent so most active loans aren't overdue yet
+- 0-3 historical `Returned` loan rows per book, with return dates skewed toward being on time
+- `due_date` is `checkout_date + 14 days` (`LOAN_PERIOD_DAYS`) for every loan
+- `is_overdue`, `overdue_days`, and `penalty_amount` (`overdue_days * $0.50/day`) are derived for both `Borrowed` (checked against today) and `Returned` (checked against `checkin_date`) loans
+- Dummy `memberId` drawn from a pool of 300 possible members
+
+Output: `books_loans.csv` (columns: `loanId, bookId, memberId, checkout_date, due_date, checkin_date, status, overdue_days, is_overdue, penalty_amount`)
+
 ## Planned next steps
-- `loans.csv` — loan history (`bookId, memberId, checkout_date, checkin_date`)
 - `members.csv` — dummy member records (`memberId, member_name`)
