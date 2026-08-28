@@ -26,20 +26,46 @@ Output: `books_catalogue.csv` (columns: `bookId, title, author, isbn`)
 
 ### `generate_inventory.py`
 Generates `books_inventory.csv` from `books_catalogue.csv` with dummy copy counts for each book:
-- `total_copies`: random single-digit value (1-9)
-- `available_copies`: random value between 0 and `total_copies` (never exceeds it)
+- `total_copies`: random value between 1 and 3
+- `available_copies`: added later by `generate_loans.py` based on active loans
 
-Output: `books_inventory.csv` (columns: `bookId, total_copies, available_copies`)
+Output: `books_inventory.csv` (columns: `bookId, total_copies` initially; `available_copies` is added by `generate_loans.py`)
+
+### `generate_members.py`
+Generates `library_members.csv` with 500 dummy library members. Each member includes:
+- A generated first name, last name, and email address
+- A join date between 30 and 2,000 days ago
+- A membership expiry date based on yearly renewals
+- A `membership_status` of `Active` or `Expired`
+
+Output: `library_members.csv` (columns: `memberId, first_name, last_name, email, join_date, membership_expiry_date, membership_status`)
 
 ### `generate_loans.py`
 Generates `books_loans.csv` from `books_inventory.csv` — the loan history for each book:
 - One `Borrowed` (active) loan row per currently checked-out copy (`total_copies - available_copies`), with checkout dates skewed recent so most active loans aren't overdue yet
-- 0-3 historical `Returned` loan rows per book, with return dates skewed toward being on time
+- 0-2 historical `Returned` loan rows per book, with return dates skewed toward being on time
 - `due_date` is `checkout_date + 14 days` (`LOAN_PERIOD_DAYS`) for every loan
 - `is_overdue`, `overdue_days`, and `penalty_amount` (`overdue_days * $0.50/day`) are derived for both `Borrowed` (checked against today) and `Returned` (checked against `checkin_date`) loans
-- Dummy `memberId` drawn from a pool of 300 possible members
+- Dummy `memberId` drawn from a pool of 500 possible members
 
 Output: `books_loans.csv` (columns: `loanId, bookId, memberId, checkout_date, due_date, checkin_date, status, overdue_days, is_overdue, penalty_amount`)
 
-## Planned next steps
-- `members.csv` — dummy member records (`memberId, member_name`)
+## How to generate
+
+Run the scripts in this order from the `generate_library_catalogue` directory:
+
+```bash
+python generate_library_catalogue/clean_csv.py
+python generate_library_catalogue/generate_inventory.py
+python generate_library_catalogue/generate_members.py
+python generate_library_catalogue/generate_loans.py
+```
+
+Each script reads the output created by the previous step. The final step also updates `books_inventory.csv` with `available_copies`, based on the active loans it creates.
+
+The generated files are written to the `data/` directory:
+
+1. `books_catalogue.csv`
+2. `books_inventory.csv`
+3. `library_members.csv`
+4. `books_loans.csv`
