@@ -1,6 +1,7 @@
 # library-management-system
 
 A console library management system built on persistent CSV data.
+Given the requirements, this is in the perspective of a librarian / administrator and not a member / user.
 
 ## Project Structure
 ```
@@ -126,7 +127,47 @@ The generated files are written to the `data/` directory:
 - README with setup + short architecture diagram
 - Maven build, portable relative paths — no secrets / no network
 
+### Development Roadmap WIP / Plan
+#### W1
+Day 1 - Generate Library Catalogue
+- Includes books, stocks, loans, members info in csvs
+
+#### W2
+Day 2 - Build Maven Structure
+- Create a basic cli menu with no connected functionality
+- Add basic members and books repository info
+- Add basic exception handling
+- Add static values testing 
+
+Day 3 - CSV integration (read-only)
+- Integrate generated datasets into console library management system (read-only functionalities for now)
+- add loans menu
+- connect basic read-only functionalities, no concurrency for now
+  - list all books
+  - search books by title, author, isbm
+  - show borrowed books 
+  - search loan history by bookId or memberId
+
+Day 4 - Persistent write csv integration
+- register new member
+- check-in / check-out book
+
+#### W3
+Day 5 - Exceptions
+- add exceptions
+  - input validation
+  - error handling 
+
+Day 6 - Concurrency
+
+Day 7 - jUnit testing
+
+Day 8 - update documentation specs & build testing from fresh clone
+
 ## How to Run
 
 
 ## Sample Console Run
+
+## Possible improvements in the future
+- Add filter options when searching
