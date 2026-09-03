@@ -7,12 +7,25 @@ import librarymanagement.repository.BookRepository;
 public class Member {
     private int id;
     private String name;
+    private String email;
+    private String joinDate;
+    private String membershipExpiryDate;
+    private String membershipStatus;
     private Set<Integer> issuedBookIds = new HashSet<>();
     static final int MAX_ISSUED = 10;
 
     public Member(int id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Member(int id, String name, String email, String joinDate,
+            String membershipExpiryDate, String membershipStatus) {
+        this(id, name);
+        this.email = email;
+        this.joinDate = joinDate;
+        this.membershipExpiryDate = membershipExpiryDate;
+        this.membershipStatus = membershipStatus;
     }
 
     public int getId() {
@@ -29,6 +42,22 @@ public class Member {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public String getJoinDate() {
+        return this.joinDate;
+    }
+
+    public String getMembershipExpiryDate() {
+        return this.membershipExpiryDate;
+    }
+
+    public String getMembershipStatus() {
+        return this.membershipStatus;
     }
 
     public Set<Integer> getIssuedBookIds() {
@@ -53,6 +82,13 @@ public class Member {
 
     @java.lang.Override
     public java.lang.String toString() {
-        return "ID: " + getId() + " | Name: " + getName() + " | Total Books assigned : " + getIssuedBookIds().size();
+        String details = "ID: " + getId() + " | Name: " + getName();
+        if (email != null) {
+            details += " | Email: " + getEmail()
+                    + " | Joined: " + getJoinDate()
+                    + " | Expires: " + getMembershipExpiryDate()
+                    + " | Status: " + getMembershipStatus();
+        }
+        return details + " | Total Books assigned: " + getIssuedBookIds().size();
     }
 }

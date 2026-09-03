@@ -8,14 +8,21 @@ public class BookRepository {
     private Map<Integer, Book> books = new HashMap<>();
 
     public boolean addBook(Book b) {
-        if (books.containsKey(b.getId())) {
+        if (!importBook(b)) {
             System.out.println("Book already exists.");
             return false;
         }
 
-        books.put(b.getId(), b);
         System.out.println("Book added successfully.");
         System.out.println(b);
+        return true;
+    }
+
+    public boolean importBook(Book book) {
+        if (books.containsKey(book.getId())) {
+            return false;
+        }
+        books.put(book.getId(), book);
         return true;
     }
 
@@ -37,7 +44,7 @@ public class BookRepository {
             }
         }
 
-        return bookList;
+        return bookList.stream().sorted(Comparator.comparingInt(Book::getId)).toList();
     }
 
     public List<Book> searchByAuthor(String q) {
@@ -49,7 +56,7 @@ public class BookRepository {
             }
         }
 
-        return bookList;
+        return bookList.stream().sorted(Comparator.comparingInt(Book::getId)).toList();
     }
 
     public List<Book> searchByIsbn(String isbn) {
@@ -61,11 +68,17 @@ public class BookRepository {
             }
         }
 
-        return bookList;
+        return bookList.stream().sorted(Comparator.comparingInt(Book::getId)).toList();
     }
 
     public List<Book> getAllBooks() {
-        return new ArrayList<Book>(books.values());
+        return books.values().stream()
+                .sorted(Comparator.comparingInt(Book::getId))
+                .toList();
+    }
+
+    public boolean containsId(int bookId) {
+        return books.containsKey(bookId);
     }
 
     public boolean issueBook(int bookId) {

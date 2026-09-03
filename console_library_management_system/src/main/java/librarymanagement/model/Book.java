@@ -70,7 +70,8 @@ public class Book {
     public java.lang.String toString() {
         String avail = isAvailable() ? "Available" : "Not Available";
         return "ID: " + getId() + " | Title: " + getTitle() + " | Author: " + getAuthor()
-            + " | ISBN: " + getIsbn() + " | Availability: " + avail;
+            + " | ISBN: " + getIsbn() + " | Total copies: " + getTotalQuantity()
+            + " | Available copies: " + getAvailable() + " | Availability: " + avail;
     }
 
     public boolean isAvailable() {
