@@ -8,6 +8,40 @@ Given the requirements, this is in the perspective of a librarian / administrato
 library-management-system
 ├── .gitignore
 ├── README.md
+├── console_library_management_system
+│   ├── pom.xml
+│   └── src
+│       ├── main
+│       │   └── java
+│       │       └── librarymanagement
+│       │           ├── cli
+│       │           │   ├── ConsoleDisplay.java
+│       │           │   ├── ConsoleInput.java
+│       │           │   ├── Library.java
+│       │           │   └── MenuDisplay.java
+│       │           ├── model
+│       │           │   ├── Book.java
+│       │           │   ├── Loan.java
+│       │           │   ├── LoanStatus.java
+│       │           │   └── Member.java
+│       │           ├── repository
+│       │           │   ├── BookRepository.java
+│       │           │   ├── LoanRepository.java
+│       │           │   └── MemberRepository.java
+│       │           ├── service
+│       │           │   ├── BookCsvReader.java
+│       │           │   ├── LoanCsvReader.java
+│       │           │   └── MemberCsvReader.java
+│       │           └── util
+│       │               └── ErrorHandling.java
+│       └── test
+│           └── java
+│               └── librarymanagement
+│                   ├── model
+│                   │   └── BookTest.java
+│                   └── repository
+│                       ├── BookRepositoryTest.java
+│                       └── MemberRepositoryTest.java
 ├── data
 │   ├── books.csv
 │   ├── books_catalogue.csv
@@ -148,21 +182,26 @@ Day 3 - CSV integration (read-only)
   - show borrowed books 
   - search loan history by bookId or memberId
 
-Day 4 - Persistent write csv integration
+Day 4 - Persistent write csv integration, some refactoring
 - register new member
 - check-in / check-out book
+- persist details in csv data
+- refactor cli
 
 #### W3
-Day 5 - Exceptions
+Day 5 - Concurrency
+
+Day 6 - Exceptions
 - add exceptions
   - input validation
   - error handling 
 
-Day 6 - Concurrency
-
 Day 7 - jUnit testing
 
+#### W4
 Day 8 - update documentation specs & build testing from fresh clone
+
+Day 9 - draft presentation flow
 
 ## How to Run
 
@@ -171,3 +210,5 @@ Day 8 - update documentation specs & build testing from fresh clone
 
 ## Possible improvements in the future
 - Add filter options when searching
+- Add library catalogue
+- membership renewal
