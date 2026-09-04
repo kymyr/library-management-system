@@ -2,8 +2,6 @@ package librarymanagement.model;
 
 import java.util.*;
 
-import librarymanagement.repository.BookRepository;
-
 public class Member {
     private int id;
     private String name;
@@ -12,7 +10,7 @@ public class Member {
     private String membershipExpiryDate;
     private String membershipStatus;
     private Set<Integer> issuedBookIds = new HashSet<>();
-    static final int MAX_ISSUED = 10;
+    public static final int MAX_ISSUED = 10;
 
     public Member(int id, String name) {
         this.id = id;
@@ -65,18 +63,18 @@ public class Member {
     }
 
     public boolean canIssueMore() {
-        if (getIssuedBookIds().size() >= MAX_ISSUED) {
-            System.out.println(getName() + " has reached the maximum number of issues!");
-            return false;
-        }
-        return true;
+        return getIssuedBookIds().size() < MAX_ISSUED;
     }
 
-    public boolean addIssuedBook(int bookId, BookRepository bookRepo) {
+    public boolean hasActiveMembership() {
+        return "Active".equalsIgnoreCase(membershipStatus);
+    }
+
+    public boolean addIssuedBook(int bookId) {
         return getIssuedBookIds().add(bookId);
     }
 
-    public boolean removeIssuedBook(int bookId, BookRepository bookRepo) {
+    public boolean removeIssuedBook(int bookId) {
         return getIssuedBookIds().remove(bookId);
     }
 

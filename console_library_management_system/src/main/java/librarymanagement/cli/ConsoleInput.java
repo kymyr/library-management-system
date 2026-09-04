@@ -9,9 +9,7 @@ import librarymanagement.repository.BookRepository;
 import librarymanagement.repository.MemberRepository;
 import librarymanagement.util.ErrorHandling;
 
-/** Every console prompt in one place; validation itself still lives in {@link ErrorHandling}. */
 public class ConsoleInput {
-    /** Raw registration answers, before they become a {@link Member}. */
     public record MemberDetails(String firstName, String lastName, String email) {
     }
 
@@ -36,7 +34,6 @@ public class ConsoleInput {
         return err.validateConfirmation(prompt, sc);
     }
 
-    /** Prints {@code cancelMessage} when the answer is no. */
     public boolean confirm(String prompt, String cancelMessage, Scanner sc) {
         if (err.validateConfirmation(prompt, sc)) {
             return true;
@@ -45,7 +42,6 @@ public class ConsoleInput {
         return false;
     }
 
-    /** Re-asks until the ID exists; null when the user backs out. */
     public Member member(Scanner sc) {
         while (true) {
             int memberId = err.validateCancellableId("Enter Member Id:", sc);
@@ -59,7 +55,6 @@ public class ConsoleInput {
         }
     }
 
-    /** Re-asks until the ID exists; null when the user backs out. */
     public Book book(Scanner sc) {
         while (true) {
             int bookId = err.validateCancellableId("Enter Book Id:", sc);
@@ -73,7 +68,6 @@ public class ConsoleInput {
         }
     }
 
-    /** Null when the user backs out of any of the three prompts. */
     public MemberDetails newMemberDetails(Scanner sc) {
         String firstName = err.validateCancellableString("Enter First Name:", sc);
         if (firstName == null) {
@@ -93,10 +87,6 @@ public class ConsoleInput {
         return new MemberDetails(firstName, lastName, email);
     }
 
-    /**
-     * Walks the user through the Search Book submenu, letting them pick a matching
-     * book by ID. Returns null if the user backs out without selecting one.
-     */
     public Book searchBook(Scanner sc) {
         while (true) {
             int option = menuChoice(MenuDisplay.searchBookMenu(), sc);
@@ -128,7 +118,6 @@ public class ConsoleInput {
         }
     }
 
-    /** Returns the chosen book, or null to send the user back to the search menu. */
     private Book selectFromResults(List<Book> results, Scanner sc) {
         if (results.isEmpty()) {
             System.out.println("No books found.");
@@ -153,7 +142,7 @@ public class ConsoleInput {
                     return b;
                 }
             }
-            System.out.println("That Id isn't in the results shown.");
+            System.out.println("Invalid Book Id.");
         } catch (NumberFormatException e) {
             System.out.println("Invalid input.");
         }
