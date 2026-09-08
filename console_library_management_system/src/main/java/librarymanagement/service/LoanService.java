@@ -1,5 +1,6 @@
 package librarymanagement.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -19,10 +20,12 @@ public class LoanService {
 
     private final BookRepository bookRepo;
     private final LoanRepository loanRepo;
+    private final CsvService csvService;
 
-    public LoanService(BookRepository bookRepo, LoanRepository loanRepo) {
+    public LoanService(BookRepository bookRepo, LoanRepository loanRepo, CsvService csvService) {
         this.bookRepo = bookRepo;
         this.loanRepo = loanRepo;
+        this.csvService = csvService;
     }
 
     public LocalDate dueDateFor(LocalDate checkoutDate) {
@@ -54,24 +57,33 @@ public class LoanService {
         return Optional.empty();
     }
 
-    public Loan checkOut(Member member, Book book, LocalDate checkoutDate) {        Loan loan = new Loan(loanRepo.getNextLoanId(), book.getId(), member.getId(),
+    public Loan checkOut(Member member, Book book, LocalDate checkoutDate) throws IOException {
+        Loan loan = new Loan(loanRepo.getNextLoanId(), book.getId(), member.getId(),
                 checkoutDate.toString(), dueDateFor(checkoutDate).toString(), "",
                 LoanStatus.BORROWED, 0, false, 0.0);
 
         bookRepo.issueBook(book.getId());
         member.addIssuedBook(book.getId());
         loanRepo.addLoan(loan);
+        saveLoanChanges();
         return loan;
     }
 
-    public Loan checkIn(Member member, Book book, Loan loan, LocalDate checkinDate) {
+    public Loan checkIn(Member member, Book book, Loan loan, LocalDate checkinDate)
+            throws IOException {
         int overdueDays = overdueDaysFor(loan, checkinDate);
         Loan returned = loan.withReturn(checkinDate.toString(), overdueDays, penaltyFor(overdueDays));
 
         loanRepo.replaceLoan(loan, returned);
         bookRepo.returnBook(book.getId());
         member.removeIssuedBook(book.getId());
+        saveLoanChanges();
         return returned;
+    }
+
+    private void saveLoanChanges() throws IOException {
+        csvService.saveLoans(loanRepo);
+        csvService.saveInventory(bookRepo);
     }
 
     public int overdueDaysFor(Loan loan, LocalDate checkinDate) {

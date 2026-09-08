@@ -53,8 +53,8 @@ public final class MenuDisplay {
                 "0 - Back to Main Menu",
                 "1 - Show All Books",
                 "2 - Search Book",
-                "3 - Check Out Book",
-                "4 - Check In Book");
+                "3 - Borrow Book (Check out)",
+                "4 - Return Book (Check in)");
     }
 
     public static String searchBookMenu() {

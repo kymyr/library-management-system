@@ -12,7 +12,6 @@ import librarymanagement.model.Member;
 import librarymanagement.repository.BookRepository;
 import librarymanagement.repository.MemberRepository;
 
-/** All console rendering for books, members and loans. */
 public class ConsoleDisplay {
     private static final int PAGE_SIZE = 50;
 
@@ -93,7 +92,6 @@ public class ConsoleDisplay {
         displayPaged(toLines(memberRepo.getAllMembers()), sc);
     }
 
-    /** Prints the rejection reason if there is one; true means the caller should stop. */
     public boolean showRejection(Optional<String> rejection) {
         rejection.ifPresent(System.out::println);
         return rejection.isPresent();
@@ -156,7 +154,6 @@ public class ConsoleDisplay {
         displayPaged(lines, sc);
     }
 
-    /** Lists the member's open loans so the check-in prompt has the right book IDs on screen. */
     public void showBorrowedBooks(Member member, List<Loan> activeLoans) {
         System.out.println("\nBooks currently borrowed by " + member.getName() + ":");
         for (Loan loan : activeLoans) {

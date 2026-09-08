@@ -1,5 +1,6 @@
 package librarymanagement.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 import librarymanagement.model.Member;
@@ -9,9 +10,11 @@ public class MemberService {
     private static final int MEMBERSHIP_YEARS = 1;
 
     private final MemberRepository memberRepo;
+    private final CsvService csvService;
 
-    public MemberService(MemberRepository memberRepo) {
+    public MemberService(MemberRepository memberRepo, CsvService csvService) {
         this.memberRepo = memberRepo;
+        this.csvService = csvService;
     }
 
     public Member buildMember(String firstName, String lastName, String email, LocalDate joinDate) {
@@ -19,7 +22,11 @@ public class MemberService {
                 joinDate.toString(), joinDate.plusYears(MEMBERSHIP_YEARS).toString(), "Active");
     }
 
-    public boolean register(Member member) {
-        return memberRepo.registerMember(member);
+    public boolean register(Member member) throws IOException {
+        if (!memberRepo.registerMember(member)) {
+            return false;
+        }
+        csvService.saveMembers(memberRepo);
+        return true;
     }
 }

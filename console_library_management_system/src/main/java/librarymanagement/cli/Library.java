@@ -12,7 +12,7 @@ import librarymanagement.model.Member;
 import librarymanagement.repository.BookRepository;
 import librarymanagement.repository.MemberRepository;
 import librarymanagement.repository.LoanRepository;
-import librarymanagement.service.LibraryLoader;
+import librarymanagement.service.CsvService;
 import librarymanagement.service.LoanService;
 import librarymanagement.service.MemberService;
 import librarymanagement.util.ErrorHandling;
@@ -45,11 +45,16 @@ public class Library {
 
             System.out.println("\nNew Member Details:");
             System.out.println(member);
-            if (input.confirm("Confirm member registration? (y/n):", sc)) {
-                memberService.register(member);
+            if (input.confirm("\nConfirm member registration? (y/n):", sc)) {
+                try {
+                    memberService.register(member);
+                    System.out.println("Member " + member.getId() + " successfully added to library members.");
+                } catch (IOException e) {
+                    System.out.println("Member registered but could not be saved to CSV.");
+                }
                 return;
             }
-            System.out.println("Let's edit the member details.\n");
+            System.out.println(MenuDisplay.header("Edit member details"));
         }
     }
 
@@ -77,7 +82,11 @@ public class Library {
             return;
         }
 
-        loanService.checkOut(member, book, checkoutDate);
+        try {
+            loanService.checkOut(member, book, checkoutDate);
+        } catch (IOException e) {
+            System.out.println("Book checked out but could not be saved to CSV.");
+        }
         display.showLoanOutcome(book, member, "borrowed by member");
     }
 
@@ -121,7 +130,11 @@ public class Library {
             return;
         }
 
-        loanService.checkIn(member, book, loan, checkinDate);
+        try {
+            loanService.checkIn(member, book, loan, checkinDate);
+        } catch (IOException e) {
+            System.out.println("Book checked in but could not be saved to CSV.");
+        }
         display.showLoanOutcome(book, member, "returned to inventory by member");
     }
 
@@ -233,9 +246,10 @@ public class Library {
         BookRepository bookRepo = new BookRepository();
         MemberRepository memberRepo = new MemberRepository();
         LoanRepository loanRepo = new LoanRepository();
+        CsvService csvService = new CsvService();
 
         try {
-            new LibraryLoader().loadAll(bookRepo, memberRepo, loanRepo);
+            csvService.loadAll(bookRepo, memberRepo, loanRepo);
         } catch (IOException e) {
             System.out.println("Library data could not be loaded.");
         }
@@ -244,7 +258,7 @@ public class Library {
         ConsoleDisplay display = new ConsoleDisplay(bookRepo, memberRepo);
 
         Library library = new Library(
-                new LoanService(bookRepo, loanRepo), new MemberService(memberRepo),
+                new LoanService(bookRepo, loanRepo, csvService), new MemberService(memberRepo, csvService),
                 new ConsoleInput(bookRepo, memberRepo, display, err), display);
 
         try (Scanner sc = new Scanner(System.in)) {
