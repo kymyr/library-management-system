@@ -8,6 +8,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import librarymanagement.model.Book;
 import librarymanagement.model.Loan;
@@ -26,9 +31,9 @@ public class CsvService {
         "loanId,bookId,memberId,checkout_date,due_date,checkin_date,status,"
         + "overdue_days,is_overdue,penalty_amount";
 
-    public void loadAll(BookRepository bookRepo, MemberRepository memberRepo,
-            LoanRepository loanRepo) throws IOException {
-        loadBooks(findDataFile("books_catalogue.csv"), findDataFile("books_inventory.csv"), bookRepo);
+    public void loadAll(BookRepository bookRepo, MemberRepository memberRepo, LoanRepository loanRepo) throws IOException {
+        loadBooksConcurrently(findDataFile("books_catalogue.csv"),
+            findDataFile("books_inventory.csv"), bookRepo);
         loadMembers(findDataFile("library_members.csv"), memberRepo);
         loadLoans(findDataFile("books_loans.csv"), loanRepo);
         syncIssuedBooks(loanRepo, memberRepo);
@@ -76,6 +81,78 @@ public class CsvService {
         return loadedBooks;
     }
 
+    public int loadBooksConcurrently(Path cataloguePath, Path inventoryPath, BookRepository bookRepository) throws IOException {
+        Map<Integer, int[]> inventoryByBookId = readInventory(inventoryPath);
+        List<String> catalogueLines = Files.readAllLines(cataloguePath);
+        List<java.util.concurrent.Callable<Book>> tasks = new ArrayList<>();
+
+        for (int lineNumber = 1; lineNumber < catalogueLines.size(); lineNumber++) {
+            String line = catalogueLines.get(lineNumber);
+            tasks.add(() -> parseBook(line, inventoryByBookId));
+        }
+
+        int imported = 0;
+        int failed = 0;
+        ExecutorService pool = Executors.newFixedThreadPool(
+            Math.max(2, Runtime.getRuntime().availableProcessors()));
+
+        try {
+            List<Future<Book>> futures = pool.invokeAll(tasks);
+            for (Future<Book> future : futures) {
+                try {
+                    Book book = future.get();
+                    if (book == null || !bookRepository.importBook(book)) {
+                        failed++;
+                    } else {
+                        imported++;
+                    }
+                } catch (ExecutionException e) {
+                    failed++;
+                }
+            }
+        } catch (InterruptedException e) {
+            pool.shutdownNow();
+            Thread.currentThread().interrupt();
+            throw new IOException("Book import was interrupted.", e);
+        } finally {
+            pool.shutdown();
+            try {
+                if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+                    pool.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                pool.shutdownNow();
+                Thread.currentThread().interrupt();
+                throw new IOException("Book import shutdown was interrupted.", e);
+            }
+        }
+
+        System.out.println("Concurrent CSV book-row import: " + imported + " imported, " + failed + " failed.");
+        return imported;
+    }
+
+    private Book parseBook(String line, Map<Integer, int[]> inventoryByBookId) {
+        List<String> fields = parseCsvLine(line);
+        if (fields.size() != 4) {
+            return null;
+        }
+
+        try {
+            int bookId = Integer.parseInt(fields.get(0).trim());
+            int[] copies = inventoryByBookId.get(bookId);
+            if (copies == null) {
+                return null;
+            }
+
+            Book book = new Book(bookId, fields.get(1).trim(), fields.get(2).trim(),
+                fields.get(3).trim(), copies[0]);
+            book.setAvailable(copies[1]);
+            return book;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
     public int loadMembers(Path path, MemberRepository memberRepository) throws IOException {
         List<String> lines = Files.readAllLines(path);
         int loadedMembers = 0;
@@ -119,16 +196,16 @@ public class CsvService {
 
             try {
                 Loan loan = new Loan(
-                        Integer.parseInt(fields[0].trim()),
-                        Integer.parseInt(fields[1].trim()),
-                        Integer.parseInt(fields[2].trim()),
-                        fields[3].trim(),
-                        fields[4].trim(),
-                        fields[5].trim(),
-                        LoanStatus.valueOf(fields[6].trim().toUpperCase()),
-                        Integer.parseInt(fields[7].trim()),
-                        Boolean.parseBoolean(fields[8].trim()),
-                        Double.parseDouble(fields[9].trim()));
+                    Integer.parseInt(fields[0].trim()),
+                    Integer.parseInt(fields[1].trim()),
+                    Integer.parseInt(fields[2].trim()),
+                    fields[3].trim(),
+                    fields[4].trim(),
+                    fields[5].trim(),
+                    LoanStatus.valueOf(fields[6].trim().toUpperCase()),
+                    Integer.parseInt(fields[7].trim()),
+                    Boolean.parseBoolean(fields[8].trim()),
+                    Double.parseDouble(fields[9].trim()));
                 if (loanRepository.addLoan(loan)) {
                     loadedLoans++;
                 }
@@ -166,8 +243,8 @@ public class CsvService {
             String lastName = space < 0 ? "" : name.substring(space + 1);
 
             lines.add(member.getId() + "," + firstName + "," + lastName + ","
-                    + member.getEmail() + "," + member.getJoinDate() + ","
-                    + member.getMembershipExpiryDate() + "," + member.getMembershipStatus());
+                + member.getEmail() + "," + member.getJoinDate() + ","
+                + member.getMembershipExpiryDate() + "," + member.getMembershipStatus());
         }
 
         Files.write(findDataFile("library_members.csv"), lines);
@@ -183,9 +260,9 @@ public class CsvService {
 
         for (Loan loan : loans) {
             lines.add(loan.loanId() + "," + loan.bookId() + "," + loan.memberId() + ","
-                    + loan.checkoutDate() + "," + loan.dueDate() + "," + loan.checkinDate() + ","
-                    + statusLabel(loan) + "," + loan.overdueDays() + "," + loan.overdue() + ","
-                    + loan.penaltyAmount());
+                + loan.checkoutDate() + "," + loan.dueDate() + "," + loan.checkinDate() + ","
+                + statusLabel(loan) + "," + loan.overdueDays() + "," + loan.overdue() + ","
+                + loan.penaltyAmount());
         }
 
         Files.write(findDataFile("books_loans.csv"), lines);
@@ -236,7 +313,6 @@ public class CsvService {
         return fields;
     }
 
-    // CSV keeps the generator's "Borrowed"/"Returned" casing, not the enum's
     private String statusLabel(Loan loan) {
         String name = loan.status().name();
         return name.charAt(0) + name.substring(1).toLowerCase();
