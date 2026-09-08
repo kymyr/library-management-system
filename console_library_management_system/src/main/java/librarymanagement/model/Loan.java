@@ -18,6 +18,6 @@ public record Loan(
 
     public Loan withReturn(String checkinDate, int overdueDays, double penaltyAmount) {
         return new Loan(loanId, bookId, memberId, checkoutDate, dueDate,
-                checkinDate, LoanStatus.RETURNED, overdueDays, overdueDays > 0, penaltyAmount);
+        checkinDate, LoanStatus.RETURNED, overdueDays, overdueDays > 0, penaltyAmount);
     }
 }

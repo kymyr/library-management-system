@@ -13,6 +13,7 @@ import librarymanagement.repository.BookRepository;
 import librarymanagement.repository.MemberRepository;
 
 public class ConsoleDisplay {
+    // for pagination - 50 per page
     private static final int PAGE_SIZE = 50;
 
     private final BookRepository bookRepo;
@@ -23,10 +24,10 @@ public class ConsoleDisplay {
         this.memberRepo = memberRepo;
     }
 
-    /**
-     * Displays lines in fixed-size pages so large lists (e.g. hundreds of books/members)
-     * don't flood the console at once. Returns false when the user backs out.
-     */
+    /*
+        Displays lines in fixed-size pages so large lists (e.g. hundreds of books/members)
+        don't flood the console at once. Returns false when the user backs out.
+    */
     public boolean displayPaged(List<String> lines, Scanner sc) {
         if (lines.isEmpty()) {
             System.out.println("None");
@@ -49,8 +50,8 @@ public class ConsoleDisplay {
 
             System.out.println();
             System.out.print("-- Showing " + (start + 1) + "-" + end + " of " + total
-                    + " (Page " + currentPage + " of " + totalPages
-                    + "). Enter n for next, p for previous, 0 to go back, or a page number: ");
+                + " (Page " + currentPage + " of " + totalPages
+                + "). Enter n for next, p for previous, 0 to go back, or a page number: ");
             String input = sc.nextLine().trim().toLowerCase();
             showPage = true;
 
@@ -100,9 +101,9 @@ public class ConsoleDisplay {
     public void showBookInfo(Book book) {
         System.out.println("\nBook Information:");
         System.out.println("ID: " + book.getId() + " | Title: " + book.getTitle()
-                + " | Author: " + book.getAuthor() + " | ISBN: " + book.getIsbn()
-                + " | Total copies: " + book.getTotalQuantity()
-                + " | Available copies: " + book.getAvailable());
+            + " | Author: " + book.getAuthor() + " | ISBN: " + book.getIsbn()
+            + " | Total copies: " + book.getTotalQuantity()
+            + " | Available copies: " + book.getAvailable());
     }
 
     public void showMemberInfo(Member member) {
@@ -110,8 +111,7 @@ public class ConsoleDisplay {
         System.out.println(member);
     }
 
-    public void showCheckOutSummary(Member member, Book book, LocalDate checkoutDate,
-            LocalDate dueDate) {
+    public void showCheckOutSummary(Member member, Book book, LocalDate checkoutDate, LocalDate dueDate) {
         System.out.println("\nCheck Out Summary:");
         showMemberInfo(member);
         showBookInfo(book);
@@ -119,8 +119,7 @@ public class ConsoleDisplay {
         System.out.println("Checkout date: " + checkoutDate + " | Due date: " + dueDate);
     }
 
-    public void showCheckInSummary(Member member, Book book, Loan loan, LocalDate checkinDate,
-            int overdueDays, double penalty) {
+    public void showCheckInSummary(Member member, Book book, Loan loan, LocalDate checkinDate, int overdueDays, double penalty) {
         System.out.println("\nCheck In Summary:");
         showMemberInfo(member);
         showBookInfo(book);
@@ -136,8 +135,7 @@ public class ConsoleDisplay {
 
     public void showLoanOutcome(Book book, Member member, String action) {
         showBookInfo(book);
-        System.out.println("Book " + book.getId() + " successfully " + action + " member "
-                + member.getId() + ".");
+        System.out.println("Book " + book.getId() + " successfully " + action + " member " + member.getId() + ".");
     }
 
     public void showLoans(List<Loan> loans, Scanner sc) {
@@ -161,11 +159,10 @@ public class ConsoleDisplay {
             if (bookRepo.containsId(loan.bookId())) {
                 Book borrowed = bookRepo.findById(loan.bookId());
                 details.append(" | Title: ").append(borrowed.getTitle())
-                        .append(" | Author: ").append(borrowed.getAuthor())
-                        .append(" | ISBN: ").append(borrowed.getIsbn());
+                    .append(" | Author: ").append(borrowed.getAuthor())
+                    .append(" | ISBN: ").append(borrowed.getIsbn());
             }
-            System.out.println(details + " | Checkout: " + loan.checkoutDate()
-                    + " | Due: " + loan.dueDate());
+            System.out.println(details + " | Checkout: " + loan.checkoutDate() + " | Due: " + loan.dueDate());
         }
         System.out.println();
     }
@@ -177,11 +174,11 @@ public class ConsoleDisplay {
         String memberName = member == null ? "Unknown member" : member.getName();
         String checkinDate = loan.checkinDate().isEmpty() ? "N/A" : loan.checkinDate();
         return "Loan ID: " + loan.loanId() + " | Book ID: " + loan.bookId()
-                + " | Title: " + title + " | Member ID: " + loan.memberId()
-                + " | Member: " + memberName + " | Checkout: " + loan.checkoutDate()
-                + " | Due: " + loan.dueDate() + " | Check-in: " + checkinDate
-                + " | Status: " + loan.status() + " | Overdue days: " + loan.overdueDays()
-                + " | Penalty: $" + loan.penaltyAmount();
+            + " | Title: " + title + " | Member ID: " + loan.memberId()
+            + " | Member: " + memberName + " | Checkout: " + loan.checkoutDate()
+            + " | Due: " + loan.dueDate() + " | Check-in: " + checkinDate
+            + " | Status: " + loan.status() + " | Overdue days: " + loan.overdueDays()
+            + " | Penalty: $" + loan.penaltyAmount();
     }
 
     private List<String> toLines(List<?> items) {

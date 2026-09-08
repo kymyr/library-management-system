@@ -22,10 +22,10 @@ public class LoanRepository {
 
     public Optional<Loan> findActiveLoan(int bookId, int memberId) {
         return loans.stream()
-                .filter(loan -> loan.isActive()
-                        && loan.bookId() == bookId
-                        && loan.memberId() == memberId)
-                .findFirst();
+            .filter(loan -> loan.isActive()
+                && loan.bookId() == bookId
+                && loan.memberId() == memberId)
+            .findFirst();
     }
 
     /** Loan is a record, so a check-in swaps the stored instance for an updated copy. */

@@ -44,9 +44,9 @@ public class MemberRepository {
 
     public int getNextMemberId() {
         return memberMap.keySet().stream()
-                .mapToInt(Integer::intValue)
-                .max()
-                .orElse(0) + 1;
+            .mapToInt(Integer::intValue)
+            .max()
+            .orElse(0) + 1;
     }
 
     public void clear() {

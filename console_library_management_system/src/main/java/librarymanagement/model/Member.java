@@ -83,9 +83,9 @@ public class Member {
         String details = "ID: " + getId() + " | Name: " + getName();
         if (email != null) {
             details += " | Email: " + getEmail()
-                    + " | Joined: " + getJoinDate()
-                    + " | Expires: " + getMembershipExpiryDate()
-                    + " | Status: " + getMembershipStatus();
+            + " | Joined: " + getJoinDate()
+            + " | Expires: " + getMembershipExpiryDate()
+            + " | Status: " + getMembershipStatus();
         }
         return details + " | Total Books assigned: " + getIssuedBookIds().size();
     }

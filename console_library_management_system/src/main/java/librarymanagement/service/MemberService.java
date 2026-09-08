@@ -19,7 +19,7 @@ public class MemberService {
 
     public Member buildMember(String firstName, String lastName, String email, LocalDate joinDate) {
         return new Member(memberRepo.getNextMemberId(), firstName + " " + lastName, email,
-                joinDate.toString(), joinDate.plusYears(MEMBERSHIP_YEARS).toString(), "Active");
+            joinDate.toString(), joinDate.plusYears(MEMBERSHIP_YEARS).toString(), "Active");
     }
 
     public boolean register(Member member) throws IOException {

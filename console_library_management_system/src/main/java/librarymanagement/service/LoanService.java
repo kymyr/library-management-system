@@ -59,8 +59,8 @@ public class LoanService {
 
     public Loan checkOut(Member member, Book book, LocalDate checkoutDate) throws IOException {
         Loan loan = new Loan(loanRepo.getNextLoanId(), book.getId(), member.getId(),
-                checkoutDate.toString(), dueDateFor(checkoutDate).toString(), "",
-                LoanStatus.BORROWED, 0, false, 0.0);
+            checkoutDate.toString(), dueDateFor(checkoutDate).toString(), "",
+            LoanStatus.BORROWED, 0, false, 0.0);
 
         bookRepo.issueBook(book.getId());
         member.addIssuedBook(book.getId());
@@ -101,8 +101,8 @@ public class LoanService {
 
     public List<Loan> activeLoansFor(int memberId) {
         return loanRepo.findByMemberId(memberId).stream()
-                .filter(Loan::isActive)
-                .toList();
+            .filter(Loan::isActive)
+            .toList();
     }
 
     public List<Loan> borrowedLoans() {
