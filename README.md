@@ -161,7 +161,25 @@ The generated files are written to the `data/` directory:
 - README with setup + short architecture diagram
 - Maven build, portable relative paths — no secrets / no network
 
-### Development Roadmap WIP / Plan
+### Concurrency
+
+When the library starts, book records are imported from the catalogue CSV using several workers at the same time. Each worker prepares book data independently, and the completed results are then added to the library catalogue.
+
+This reduces the time needed to load the large book dataset. The import also reports how many books were imported successfully and how many rows could not be processed. If the import is interrupted, the workers are stopped and the system restores the interruption status before reporting the failure.
+
+### Exceptions
+
+The system uses clear error types to handle common problems without stopping the program. When an error occurs, the librarian sees a helpful message and can continue using the menu.
+
+- **Book not found:** the entered book ID does not exist in the catalogue.
+- **Member not found:** the entered member ID is not registered.
+- **Book unavailable:** the book exists, but all copies are currently borrowed.
+- **Invalid input:** the entered value is not in the expected format, such as text entered where an ID is required.
+
+These errors are organised under one general library error type so they can be handled consistently across the system.
+
+
+## Development Roadmap WIP / Plan
 #### W1
 Day 1 - Generate Library Catalogue
 - Includes books, stocks, loans, members info in csvs
@@ -189,12 +207,11 @@ Day 4 - Persistent write csv integration, some refactoring
 - refactor cli
 
 #### W3
-Day 5 - Concurrency
+Day 5 - Concurrency & exceptions
+ - concurrency for csv imports
+ - create exceptions hierarchy first
 
-Day 6 - Exceptions
-- add exceptions
-  - input validation
-  - error handling 
+Day 6 - Exceptions integration
 
 Day 7 - jUnit testing
 
@@ -207,6 +224,16 @@ Day 9 - draft presentation flow
 
 
 ## Sample Console Run
+
+
+## Testing
+
+Run the JUnit 5 test suite from the Maven module:
+
+```
+cd console_library_management_system
+mvn test
+```
 
 ## Possible improvements in the future
 - Add filter options when searching

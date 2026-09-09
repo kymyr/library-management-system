@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
+import librarymanagement.exception.BookUnavailableException;
 import librarymanagement.model.Book;
 import librarymanagement.model.Loan;
 import librarymanagement.model.LoanStatus;
@@ -37,7 +38,7 @@ public class LoanService {
             return Optional.of("Membership is not active. Book can't be checked out.");
         }
         if (!book.isAvailable()) {
-            return Optional.of("No copies available for check out.");
+            throw new BookUnavailableException(book.getId());
         }
         if (loanRepo.findActiveLoan(book.getId(), member.getId()).isPresent()) {
             return Optional.of(member.getName() + " already has this book checked out.");

@@ -2,6 +2,7 @@ package librarymanagement.repository;
 
 import java.util.*;
 
+import librarymanagement.exception.MemberNotFoundException;
 import librarymanagement.model.Member;
 
 public class MemberRepository {
@@ -32,6 +33,14 @@ public class MemberRepository {
 
         System.out.println("Member is not registered.");
         return null;
+    }
+
+    public Member findByIdOrThrow(int memberId) {
+        Member member = memberMap.get(memberId);
+        if (member == null) {
+            throw new MemberNotFoundException(memberId);
+        }
+        return member;
     }
 
     public List<Member> getAllMembers() {

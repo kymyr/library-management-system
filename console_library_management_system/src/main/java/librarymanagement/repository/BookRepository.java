@@ -2,6 +2,7 @@ package librarymanagement.repository;
 
 import java.util.*;
 
+import librarymanagement.exception.BookNotFoundException;
 import librarymanagement.model.Book;
 
 public class BookRepository {
@@ -33,6 +34,14 @@ public class BookRepository {
 
         System.out.println("Book isn't present in the library.");
         return null;
+    }
+
+    public Book findByIdOrThrow(int bookId) {
+        Book book = books.get(bookId);
+        if (book == null) {
+            throw new BookNotFoundException(bookId);
+        }
+        return book;
     }
 
     public List<Book> searchByTitle(String q) {

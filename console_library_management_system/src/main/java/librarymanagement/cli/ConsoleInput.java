@@ -3,6 +3,8 @@ package librarymanagement.cli;
 import java.util.List;
 import java.util.Scanner;
 
+import librarymanagement.exception.BookNotFoundException;
+import librarymanagement.exception.MemberNotFoundException;
 import librarymanagement.model.Book;
 import librarymanagement.model.Member;
 import librarymanagement.repository.BookRepository;
@@ -48,10 +50,11 @@ public class ConsoleInput {
             if (memberId == ErrorHandling.CANCEL) {
                 return null;
             }
-            if (memberRepo.containsId(memberId)) {
-                return memberRepo.findById(memberId);
+            try {
+                return memberRepo.findByIdOrThrow(memberId);
+            } catch (MemberNotFoundException e) {
+                System.out.println(e.getMessage() + ". Please try again.");
             }
-            System.out.println("Member ID not found. Please try again.");
         }
     }
 
@@ -61,10 +64,11 @@ public class ConsoleInput {
             if (bookId == ErrorHandling.CANCEL) {
                 return null;
             }
-            if (bookRepo.containsId(bookId)) {
-                return bookRepo.findById(bookId);
+            try {
+                return bookRepo.findByIdOrThrow(bookId);
+            } catch (BookNotFoundException e) {
+                System.out.println(e.getMessage() + ". Please try again.");
             }
-            System.out.println("Book ID not found. Please try again.");
         }
     }
 

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import librarymanagement.exception.BookUnavailableException;
 import librarymanagement.model.Book;
 import librarymanagement.model.Loan;
 import librarymanagement.model.Member;
@@ -71,7 +72,12 @@ public class Library {
             return;
         }
 
-        if (display.showRejection(loanService.rejectCheckOut(member, book))) {
+        try {
+            if (display.showRejection(loanService.rejectCheckOut(member, book))) {
+                return;
+            }
+        } catch (BookUnavailableException e) {
+            System.out.println(e.getMessage());
             return;
         }
 
