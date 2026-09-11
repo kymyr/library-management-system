@@ -17,8 +17,9 @@ class CsvServiceConcurrencyTest {
     @TempDir
     Path temporaryDirectory;
 
+        // Sequential and concurrent imports produce equivalent book records.
     @Test
-    void sequentialAndConcurrentBookImportsProduceTheSameResults() throws IOException {
+        void importsMatch() throws IOException {
         Path cataloguePath = temporaryDirectory.resolve("books_catalogue.csv");
         Path inventoryPath = temporaryDirectory.resolve("books_inventory.csv");
         writeTestData(cataloguePath, inventoryPath);

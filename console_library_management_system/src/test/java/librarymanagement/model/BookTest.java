@@ -7,16 +7,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 class BookTest {
+    // New books start with every copy available.
     @Test
-    void newBookMakesAllCopiesAvailable() {
+    void newBookIsAvailable() {
         Book book = new Book(101, "Example Book", "Example Author", "9780000000001", 3);
 
         assertEquals(3, book.getAvailable());
         assertEquals("9780000000001", book.getIsbn());
     }
 
+    // Issuing and returning copies changes availability.
     @Test
-    void bookAvailabilityChangesWhenCopiesAreIssuedAndReturned() {
+    void availabilityChanges() {
         Book book = new Book(102, "Example Book", "Example Author", "9780000000002", 1);
 
         book.decrementAvailable();
@@ -28,8 +30,9 @@ class BookTest {
         assertTrue(book.isAvailable());
     }
 
+    // Setters update the book details.
     @Test
-    void bookSettersUpdateBookFields() {
+    void settersUpdateFields() {
         Book book = new Book(103, "Old Title", "Old Author", "9780000000003", 1);
 
         book.setId(104);
