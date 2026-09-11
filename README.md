@@ -19,6 +19,12 @@ library-management-system
 │       │           │   ├── ConsoleInput.java
 │       │           │   ├── Library.java
 │       │           │   └── MenuDisplay.java
+│       │           ├── exception
+│       │           │   ├── BookNotFoundException.java
+│       │           │   ├── BookUnavailableException.java
+│       │           │   ├── InvalidInputException.java
+│       │           │   ├── LibraryException.java
+│       │           │   └── MemberNotFoundException.java
 │       │           ├── model
 │       │           │   ├── Book.java
 │       │           │   ├── Loan.java
@@ -36,13 +42,14 @@ library-management-system
 │       │               └── ErrorHandling.java
 │       └── test
 │           └── java
-│               └── librarymanagement
-│                   ├── model
-│                   │   └── BookTest.java
-│                   └── repository
-│                       ├── BookRepositoryTest.java
-│                       └── MemberRepositoryTest.java
-├── data
+│             └── librarymanagement
+│                 ├── model
+│                 │   └── BookTest.java
+│                 ├── repository
+│                 │   ├── BookRepositoryTest.java
+│                 │   └── MemberRepositoryTest.java
+│                 └── service
+│                     └── CsvServiceConcurrencyTest.java
 │   ├── books.csv
 │   ├── books_catalogue.csv
 │   ├── books_inventory.csv
@@ -161,6 +168,14 @@ The generated files are written to the `data/` directory:
 - README with setup + short architecture diagram
 - Maven build, portable relative paths — no secrets / no network
 
+### Testing & coverage
+- JUnit 5 (+ AssertJ, Mockito - both optional)
+- Cover validation, search, failure paths
+- Persistence round-trip; malformed input
+- Concurrent-import correctness
+- Use @TempDir —never real user files
+- ≥ 75% line coverage via JaCoCo (mvn clean verify)
+
 ### Concurrency
 
 When the library starts, book records are imported from the catalogue CSV using several workers at the same time. Each worker prepares book data independently, and the completed results are then added to the library catalogue.
@@ -214,11 +229,16 @@ Day 5 - Concurrency & exceptions
 Day 6 - Exceptions integration
 
 Day 7 - jUnit testing
+ - junit tests
+ - configure jacoco 
 
 #### W4
-Day 8 - update documentation specs & build testing from fresh clone
+Day 8 - junit config (cont...)
+- add tests to reach required coverage
 
-Day 9 - draft presentation flow
+Day 9 - update documentation specs & build testing from fresh clone
+
+Day 10 - draft presentation flow
 
 ## How to Run
 
