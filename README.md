@@ -42,14 +42,18 @@ library-management-system
 │       │               └── ErrorHandling.java
 │       └── test
 │           └── java
-│             └── librarymanagement
-│                 ├── model
-│                 │   └── BookTest.java
-│                 ├── repository
-│                 │   ├── BookRepositoryTest.java
-│                 │   └── MemberRepositoryTest.java
-│                 └── service
-│                     └── CsvServiceConcurrencyTest.java
+│               └── librarymanagement
+│                   ├── model
+│                   │   ├── BookTest.java
+│                   │   ├── LoanTest.java
+│                   │   └── MemberTest.java
+│                   ├── repository
+│                   │   ├── BookRepositoryTest.java
+│                   │   ├── LoanRepositoryTest.java
+│                   │   └── MemberRepositoryTest.java
+│                   └── service
+│                       └── CsvServiceConcurrencyTest.java
+├── data
 │   ├── books.csv
 │   ├── books_catalogue.csv
 │   ├── books_inventory.csv
@@ -59,7 +63,8 @@ library-management-system
     ├── clean_csv.py
     ├── generate_inventory.py
     ├── generate_loans.py
-    └── generate_members.py
+    ├── generate_members.py
+    └── requirements.txt
 ```
 ---
 
