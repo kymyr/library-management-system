@@ -218,6 +218,10 @@ public class CsvService {
     }
 
     public int saveInventory(BookRepository bookRepository) throws IOException {
+        return saveInventory(findDataFile("books_inventory.csv"), bookRepository);
+    }
+
+    public int saveInventory(Path path, BookRepository bookRepository) throws IOException {
         List<String> lines = new ArrayList<>();
         lines.add(INVENTORY_HEADER);
 
@@ -225,11 +229,15 @@ public class CsvService {
             lines.add(book.getId() + "," + book.getTotalQuantity() + "," + book.getAvailable());
         }
 
-        Files.write(findDataFile("books_inventory.csv"), lines);
+        Files.write(path, lines);
         return lines.size() - 1;
     }
 
     public int saveMembers(MemberRepository memberRepository) throws IOException {
+        return saveMembers(findDataFile("library_members.csv"), memberRepository);
+    }
+
+    public int saveMembers(Path path, MemberRepository memberRepository) throws IOException {
         List<Member> members = memberRepository.getAllMembers();
         members.sort(Comparator.comparingInt(Member::getId));
 
@@ -247,11 +255,15 @@ public class CsvService {
                 + member.getMembershipExpiryDate() + "," + member.getMembershipStatus());
         }
 
-        Files.write(findDataFile("library_members.csv"), lines);
+        Files.write(path, lines);
         return lines.size() - 1;
     }
 
     public int saveLoans(LoanRepository loanRepository) throws IOException {
+        return saveLoans(findDataFile("books_loans.csv"), loanRepository);
+    }
+
+    public int saveLoans(Path path, LoanRepository loanRepository) throws IOException {
         List<Loan> loans = loanRepository.getAllLoans();
         loans.sort(Comparator.comparingInt(Loan::loanId));
 
@@ -265,7 +277,7 @@ public class CsvService {
                 + loan.penaltyAmount());
         }
 
-        Files.write(findDataFile("books_loans.csv"), lines);
+        Files.write(path, lines);
         return lines.size() - 1;
     }
 
