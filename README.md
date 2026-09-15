@@ -43,6 +43,11 @@ library-management-system
 │       └── test
 │           └── java
 │               └── librarymanagement
+│                   ├── cli
+│                   │   ├── ConsoleDisplayTest.java
+│                   │   ├── ConsoleInputTest.java
+│                   │   ├── LibraryTest.java
+│                   │   └── MenuDisplayTest.java
 │                   ├── model
 │                   │   ├── BookTest.java
 │                   │   ├── LoanTest.java
@@ -51,8 +56,13 @@ library-management-system
 │                   │   ├── BookRepositoryTest.java
 │                   │   ├── LoanRepositoryTest.java
 │                   │   └── MemberRepositoryTest.java
-│                   └── service
-│                       └── CsvServiceConcurrencyTest.java
+│                   ├── service
+│                   │   ├── CsvServiceConcurrencyTest.java
+│                   │   ├── CsvServiceTest.java
+│                   │   ├── LoanServiceTest.java
+│                   │   └── MemberServiceTest.java
+│                   └── util
+│                       └── ErrorHandlingTest.java
 ├── data
 │   ├── books.csv
 │   ├── books_catalogue.csv
@@ -235,11 +245,11 @@ Day 6 - Exceptions integration
 
 Day 7 - jUnit testing
  - junit tests
- - configure jacoco 
+ - configure jacoco (ended at 26% coverage on first run)
 
 #### W4
 Day 8 - junit config (cont...)
-- add tests to reach required coverage
+- add tests to reach required JaCoCo coverage
 
 Day 9 - update documentation specs & build testing from fresh clone
 
@@ -252,15 +262,14 @@ Day 10 - draft presentation flow
 
 
 ## Testing
-
-Run the JUnit 5 test suite from the Maven module:
+Run the JUnit 5 test suite with JaCoCo from the Maven module:
 
 ```
 cd console_library_management_system
-mvn test
+mvn clean verify
 ```
 
 ## Possible improvements in the future
 - Add filter options when searching
-- Add library catalogue
+- Add new entries for library catalogue
 - membership renewal
