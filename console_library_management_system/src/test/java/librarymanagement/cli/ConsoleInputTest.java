@@ -93,15 +93,14 @@ class ConsoleInputTest {
         assertEquals("jane@example.com", details.email());
     }
 
-    // Searching by title displays the matching book before backing all the way out.
+    // Searching by title allows the matching book to be selected.
     @Test
     void searchBookFindsByTitle() {
         bookRepo.addBook(new Book(102, "Searchable Book", "Author", "9780000000002", 1));
 
-        Book book = input.searchBook(new Scanner("1\nSearchable\n0\n0\n"));
+        Book book = input.searchBook(new Scanner("1\nSearchable\n1\n102\n"));
 
-        assertNull(book);
-        assertTrue(output.toString().contains("Searchable Book"));
+        assertEquals(102, book.getId());
     }
 
     // Backing out of the search menu returns no book.
