@@ -2,7 +2,7 @@ package librarymanagement.model;
 
 import java.util.*;
 
-public class Member {
+public class Member implements Identifiable {
     private int id;
     private String name;
     private String email;

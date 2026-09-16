@@ -1,7 +1,7 @@
 package librarymanagement.model;
 
 
-public class Book {
+public class Book implements Identifiable {
     private int id;
     private String title;
     private String author;
@@ -88,4 +88,8 @@ public class Book {
     public void decrementAvailable() {
         setAvailable(getAvailable() - 1);
     }
+}
+
+interface Identifiable {
+    int getId();
 }
