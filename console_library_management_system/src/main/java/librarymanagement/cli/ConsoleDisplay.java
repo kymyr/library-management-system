@@ -77,6 +77,7 @@ public class ConsoleDisplay {
                     showPage = false;
                 } else {
                     currentPage = requestedPage;
+                    return true;
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid choice. Enter n, p, 0, or a valid page number.");
