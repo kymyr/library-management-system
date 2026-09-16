@@ -35,9 +35,9 @@ library-management-system
 │       │           │   ├── LoanRepository.java
 │       │           │   └── MemberRepository.java
 │       │           ├── service
-│       │           │   ├── BookCsvReader.java
-│       │           │   ├── LoanCsvReader.java
-│       │           │   └── MemberCsvReader.java
+│       │           │   ├── CsvService.java
+│       │           │   ├── LoanService.java
+│       │           │   └── MemberService.java
 │       │           └── util
 │       │               └── ErrorHandling.java
 │       └── test
@@ -174,7 +174,7 @@ The generated files are written to the `data/` directory:
 8.) Clear CLI menu with helpful validation & error messages
 
 ### Mandatory Requirements
--  ≥ 8 classes in clear packages
+- ≥ 8 classes in clear packages
 - ≥ 1 interface, 1 abstract class, 1 record, 1 enum
 - Custom exception hierarchy (≥ 3 specific types)
 - Meaningful collections, generics, streams
@@ -182,6 +182,24 @@ The generated files are written to the `data/` directory:
 - ≥ 1 race-safe concurrency feature (ExecutorService / CompletableFuture)
 - README with setup + short architecture diagram
 - Maven build, portable relative paths — no secrets / no network
+
+### Architecture
+
+```mermaid
+flowchart TD
+  CLI["cli<br/>Library · ConsoleInput · ConsoleDisplay · MenuDisplay"]
+  SERVICE["service<br/>LoanService · MemberService · CsvService"]
+  REPOSITORY["repository<br/>BookRepository · MemberRepository · LoanRepository"]
+  MODEL["model<br/>Book · Member · Loan · LoanStatus"]
+  DATA[(CSV data files)]
+
+  CLI --> SERVICE
+  SERVICE --> REPOSITORY
+  REPOSITORY --> MODEL
+  SERVICE --> DATA
+```
+
+Librarians interact with the system through the console menus through the `cli`. The `services` process each request, while `repositories` store the current library data in memory, and `models` describe books, members, and loans. `CsvService` keeps data connected to the CSV files.
 
 ### Testing & coverage
 - JUnit 5 (+ AssertJ, Mockito - both optional)
@@ -256,10 +274,113 @@ Day 9 - update documentation specs & build testing from fresh clone
 Day 10 - draft presentation flow
 
 ## How to Run
+From the project root, move into the Maven module:
 
+```
+cd console_library_management_system
+```
+
+Start the interactive console system:
+
+```
+mvn compile
+java -cp target/classes librarymanagement.cli.Library
+```
+
+The system loads its CSV data from the repository's `data/` folder. Successful member registration, book check-out, and book check-in operations update the CSV data.
 
 ## Sample Console Run
+The following example shows a librarian searching for a book by title:
+```
+Concurrent CSV book-row import: 36332 imported, 0 failed.
+-----------------------------------------------------------
+             Console Library Management System             
+-----------------------------------------------------------
+                         Main Menu                         
+-----------------------------------------------------------
+            Select from the following options:             
+                         0 - Exit                          
+                         1 - Books                         
+                        2 - Members                        
+                         3 - Loans                         
+-----------------------------------------------------------
+Enter choice: 1
+-----------------------------------------------------------
+                           Books                           
+-----------------------------------------------------------
+            Select from the following options:             
+                   0 - Back to Main Menu                   
+                    1 - Show All Books                     
+                      2 - Search Book                      
+                3 - Borrow Book (Check out)                
+                4 - Return Book (Check in)                 
+-----------------------------------------------------------
+Enter choice: 2
+-----------------------------------------------------------
+                       Search Books                        
+-----------------------------------------------------------
+            Select from the following options:             
+                  0 - Back to Books Menu                   
+                    1 - Search by Title                    
+                   2 - Search by Author                    
+                    3 - Search by ISBN                     
+-----------------------------------------------------------
+Enter choice: 1
+Enter Book Title: the
+ID: 2 | Title: Harry Potter and the Order of the Phoenix | Author: J.K. Rowling, Mary GrandPre | ISBN: 9780439358071 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 5 | Title: Harry Potter and the Prisoner of Azkaban | Author: J.K. Rowling, Mary GrandPre | ISBN: 9780439655484 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 13 | Title: The Ultimate Hitchhiker's Guide to the Galaxy | Author: Douglas Adams | ISBN: 9780345453747 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 27 | Title: Neither Here nor There: Travels in Europe | Author: Bill Bryson | ISBN: 9780380713806 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 29 | Title: The Mother Tongue: English and How It Got That Way | Author: Bill Bryson | ISBN: 9780380715435 | Total copies: 3 | Available copies: 2 | Availability: Available
+ID: 30 | Title: J.R.R. Tolkien 4-Book Boxed Set: The Hobbit and The Lord of the Rings | Author: J.R.R. Tolkien | ISBN: 9780345538376 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 78 | Title: Annals of the Former World | Author: John McPhee | ISBN: 9780374518738 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 79 | Title: Coming Into the Country | Author: John McPhee | ISBN: 9780374522872 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 248 | Title: Big Sur and the Oranges of Hieronymus Bosch | Author: Henry Miller | ISBN: 9780811201070 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 258 | Title: Public Places: My Life in the Theater, with Peter O'Toole and Beyond | Author: Sian Phillips | ISBN: 9780571211197 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 290 | Title: Jesus the Son of Man | Author: Kahlil Gibran | ISBN: 9780394431246 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 354 | Title: To Sail Beyond the Sunset | Author: Robert A. Heinlein | ISBN: 9780441748600 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 357 | Title: The Long Dark Tea-Time of the Soul | Author: Douglas Adams | ISBN: 9780671742515 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 386 | Title: Another Bullshit Night in Suck City | Author: Nick Flynn | ISBN: 9780393329407 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 409 | Title: Against the Day | Author: Thomas Pynchon | ISBN: 9781594201202 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 454 | Title: Travels in the Scriptorium | Author: Paul Auster | ISBN: 9780805081459 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 629 | Title: Zen and the Art of Motorcycle Maintenance: An Inquiry Into Values | Author: Robert M. Pirsig | ISBN: 9780060589462 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 655 | Title: The Death of Ivan Ilych and Other Stories | Author: Leo Tolstoy, James Duff Duff, Aylmer Maude, Hugh McLean | ISBN: 9780451528803 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 667 | Title: Anthem | Author: Ayn Rand | ISBN: 9780452281257 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 668 | Title: We the Living | Author: Ayn Rand, Leonard Peikoff | ISBN: 9780451187840 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 676 | Title: Sailing Alone Around the Room: New and Selected Poems | Author: Billy Collins | ISBN: 9780375755194 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 771 | Title: The Elegant Universe: Superstrings, Hidden Dimensions, and the Quest for the Ultimate Theory | Author: Brian Greene | ISBN: 9780375708114 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 900 | Title: The Game: Penetrating the Secret Society of Pickup Artists | Author: Neil Strauss | ISBN: 9780060554736 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 1032 | Title: Trump: The Art of the Deal | Author: Donald J. Trump, Tony Schwartz | ISBN: 9780345479174 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 1097 | Title: Fast Food Nation: The Dark Side of the All-American Meal | Author: Eric Schlosser | ISBN: 9780060838584 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 1111 | Title: The Power Broker: Robert Moses and the Fall of New York | Author: Robert A. Caro | ISBN: 9780394720241 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 1202 | Title: Freakonomics: A Rogue Economist Explores the Hidden Side of Everything | Author: Steven D. Levitt, Stephen J. Dubner | ISBN: 9780061234002 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 1316 | Title: The Virtues of War: A Novel of Alexander the Great | Author: Steven Pressfield | ISBN: 9780553382051 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 1318 | Title: Last of the Amazons | Author: Steven Pressfield | ISBN: 9780553382044 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 1319 | Title: The War of Art: Break Through the Blocks & Win Your Inner Creative Battles | Author: Steven Pressfield, Robert McKee | ISBN: 9780446691437 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 1426 | Title: Warrior of the Light | Author: Paulo Coelho | ISBN: 9780060527983 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 1428 | Title: By the River Piedra I Sat Down and Wept | Author: Paulo Coelho, Alan R. Clarke | ISBN: 9780061122095 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 1473 | Title: Medea and Other Plays | Author: Euripides, John Davie, Richard Rutherford | ISBN: 9780140449297 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 1567 | Title: Lysistrata and Other Plays | Author: Aristophanes, Alan H. Sommerstein | ISBN: 9780140448146 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 1618 | Title: The Curious Incident of the Dog in the Night-Time | Author: Mark Haddon | ISBN: 9781400032716 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 1624 | Title: West with the Night | Author: Beryl Markham | ISBN: 9780865471184 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 1815 | Title: Breaking Open the Head: A Psychedelic Journey Into the Heart of Contemporary Shamanism | Author: Daniel Pinchbeck, Lee Fukui | ISBN: 9780767907439 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 1845 | Title: Into the Wild | Author: Jon Krakauer | ISBN: 9780385486804 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 1846 | Title: Wild at Heart: Discovering the Secret of a Man's Soul | Author: John Eldredge | ISBN: 9780785268833 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 1852 | Title: The Call of the Wild | Author: Jack London, Avi | ISBN: 9780439227148 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 1876 | Title: The History of Sexuality, Volume 3: The Care of the Self | Author: Michel Foucault, Robert Hurley | ISBN: 9780394741550 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 1898 | Title: Into Thin Air: A Personal Account of the Mount Everest Disaster | Author: Jon Krakauer | ISBN: 9780385494786 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 1911 | Title: The World Is Flat: A Brief History of the Twenty-first Century | Author: Thomas L. Friedman | ISBN: 9780374292799 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 2002 | Title: Harry Potter Schoolbooks Box Set: Two Classic Books from the Library of Hogwarts School of Witchcraft and Wizardry | Author: J.K. Rowling | ISBN: 9780439321624 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 2067 | Title: Breaking the Spell: Religion as a Natural Phenomenon | Author: Daniel C. Dennett | ISBN: 9780670034727 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 2068 | Title: Darwin's Dangerous Idea: Evolution and the Meanings of Life | Author: Daniel C. Dennett | ISBN: 9780684824710 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 2096 | Title: God Created the Integers: The Mathematical Breakthroughs That Changed History | Author: Stephen Hawking | ISBN: 9780762419227 | Total copies: 3 | Available copies: 3 | Availability: Available
+ID: 2137 | Title: A Home at the End of the World | Author: Michael Cunningham | ISBN: 9780312424084 | Total copies: 1 | Available copies: 1 | Availability: Available
+ID: 2141 | Title: In the Blink of an Eye: A Perspective on Film Editing | Author: Walter Murch, Francis Ford Coppola | ISBN: 9781879505629 | Total copies: 2 | Available copies: 2 | Availability: Available
+ID: 2165 | Title: The Old Man and the Sea | Author: Ernest Hemingway | ISBN: 9780684830490 | Total copies: 2 | Available copies: 2 | Availability: Available
 
+-- Showing 1-50 of 6433 (Page 1 of 129). Enter n for next, p for previous, 0 to go back, or a page number: 
+```
+The following results shows all books with `the` within the book title.
 
 ## Testing
 Run the JUnit 5 test suite with JaCoCo from the Maven module:
