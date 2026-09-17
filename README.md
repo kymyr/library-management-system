@@ -291,6 +291,8 @@ mvn compile
 java -cp target/classes librarymanagement.cli.Library
 ```
 
+or in an IDE, simply just run `Library.java` in `console_library_management_system/src/cli/Library.java`
+
 The system loads its CSV data from the repository's `data/` folder. Successful member registration, book check-out, and book check-in operations update the CSV data.
 
 ## Sample Console Run
