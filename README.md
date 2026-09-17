@@ -1,7 +1,7 @@
 # library-management-system
 
 A console library management system built on persistent CSV data.
-Given the requirements, this is in the perspective of a librarian / administrator and not a member / user.
+Given the requirements, this is in the perspective of a librarian / administrator and not a member.
 
 ## Project Structure
 ```
@@ -280,8 +280,12 @@ From the project root, move into the Maven module:
 cd console_library_management_system
 ```
 
-Start the interactive console system:
+if running from fresh clone, build and run all tests and generate coverage report
+```
+mvn clean verify
+```
 
+Start the interactive console system:
 ```
 mvn compile
 java -cp target/classes librarymanagement.cli.Library
