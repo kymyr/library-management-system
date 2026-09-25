@@ -173,6 +173,19 @@ The generated files are written to the `data/` directory:
 
 8.) Clear CLI menu with helpful validation & error messages
 
+### Where Each Requirement Is Implemented
+
+| # | Requirement | Implementation |
+|---|---|---|
+| 1 | Book catalogue (title, author, ISBN, copies) | `Book` model, `BookRepository` |
+| 2 | Register members with unique IDs | `MemberService.buildMember` generates the next ID from `MemberRepository` |
+| 3 | Check-out & check-in | `LoanService.checkOut` / `checkIn` |
+| 4 | Track loan history | `LoanRepository` + `Loan` record, viewable in the Loans menu |
+| 5 | Search by title/author/ISBN | `BookRepository.searchByTitle/Author/Isbn`, paginated in the console |
+| 6 | Persist to CSV via `java.nio.file` | `CsvService`, using `Files.readAllLines` / `Files.write` |
+| 7 | Bulk-import books from CSV using parallel processing | `CsvService.loadBooksConcurrently` |
+| 8 | Clear CLI menu with validation & error messages | `MenuDisplay`, `ErrorHandling`, custom exceptions |
+
 ### Mandatory Requirements
 - ≥ 8 classes in clear packages
 - ≥ 1 interface, 1 abstract class, 1 record, 1 enum
@@ -182,6 +195,22 @@ The generated files are written to the `data/` directory:
 - ≥ 1 race-safe concurrency feature (ExecutorService / CompletableFuture)
 - README with setup + short architecture diagram
 - Maven build, portable relative paths — no secrets / no network
+
+### Where Each Mandatory Requirement Is Implemented
+
+| Requirement | Implementation |
+|---|---|
+| ≥ 8 classes in clear packages | `cli`, `service`, `repository`, `model`, `exception`, `util` packages |
+| ≥ 1 interface | `Identifiable` (in `Book.java`), implemented by `Book` and `Member` |
+| ≥ 1 abstract class | `LibraryException` — the base for all custom exceptions |
+| ≥ 1 record | `Loan` |
+| ≥ 1 enum | `LoanStatus` |
+| Custom exception hierarchy (≥ 3 specific types) | `BookNotFoundException`, `MemberNotFoundException`, `BookUnavailableException`, `InvalidInputException` extend `LibraryException` |
+| Meaningful collections, generics, streams | repositories use `Map`/`List` with generics; search & filtering use streams |
+| JUnit 5 suite, ≥ 75% line coverage incl. failure paths | tests across `cli`/`service`/`repository`/`model`/`util`, JaCoCo report |
+| ≥ 1 race-safe concurrency feature | `CsvService.loadBooksConcurrently` (`ExecutorService`) |
+| README with setup + short architecture diagram | this file |
+| Maven build, portable relative paths — no secrets / no network | `pom.xml`, relative `data/` paths only |
 
 ### Architecture
 
@@ -395,6 +424,9 @@ Run the JUnit 5 test suite with JaCoCo from the Maven module:
 cd console_library_management_system
 mvn clean verify
 ```
+
+### Bulk-import CSV Concurrency test
+`CsvServiceConcurrencyTest` includes a stress test that imports 5 CSV files of ~50,000 rows each (250,000 books total) through the parallel importer and asserts it completes within a time budget. The test files are located in `test_data/` folder at the directory root, so the test only runs when those files are present.
 
 ## Possible improvements in the future
 - Add filter options when searching
