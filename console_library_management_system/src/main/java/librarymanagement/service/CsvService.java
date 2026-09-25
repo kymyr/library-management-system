@@ -127,7 +127,7 @@ public class CsvService {
             }
         }
 
-        System.out.println("Concurrent CSV book-row import: " + imported + " imported, " + failed + " failed.");
+        System.out.println("Concurrent CSV import: " + imported + " imported, " + failed + " failed.");
         return imported;
     }
 

@@ -1,3 +1,4 @@
 data/books.csv
 __pycache__/
 console_library_management_system/target/
+test_data/
